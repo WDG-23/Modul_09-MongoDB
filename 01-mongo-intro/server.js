@@ -1,7 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 
-import mongoose, { Model } from 'mongoose';
+import mongoose from 'mongoose';
+import User from './models/User.js';
+import Post from './models/Post.js';
 
 await mongoose.connect(process.env.MONGO_URI, { dbName: 'sample_mflix' });
 
@@ -52,6 +54,29 @@ app.delete('/movies/:id', async (req, res) => {
   const movie = await Movie.findByIdAndDelete(id);
 
   res.json({ data: movie });
+});
+
+// Create User
+app.post('/users', async (req, res) => {
+  const { firstName, lastName, email } = req.body;
+  const user = await User.create({ firstName, lastName, email });
+  res.status(201).json({ data: user });
+});
+
+// Create Post
+app.post('/posts', async (req, res) => {
+  const { title, content, author } = req.body;
+  const post = await Post.create({ title, content, author });
+  res.status(201).json({ data: post });
+});
+
+// Get One Post
+app.get('/posts/:id', async (req, res) => {
+  const { id } = req.params;
+
+  const post = await Post.findById(id).select('title').populate('author', '-email');
+
+  res.json({ data: post });
 });
 
 app.listen(port, () => {
