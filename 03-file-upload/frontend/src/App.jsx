@@ -10,10 +10,12 @@ function App() {
   const [uploadedImage, setUploadedImage] = useState(null);
 
   const handleChange = (e) => {
+    console.log(e.target.files);
     const fileToUpload = e.target.files[0];
 
     setFile(fileToUpload);
     setPreview(URL.createObjectURL(fileToUpload));
+    console.log(URL.createObjectURL(fileToUpload));
   };
 
   const handleSubmit = async (e) => {
